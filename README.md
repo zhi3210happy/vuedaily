@@ -21,7 +21,7 @@ api来自知乎( [知乎Zhihu](http://www.zhihu.com/) ), 项目中所有内容�
 
 ![预览](https://github.com/walleeeee/daily-zhihu/blob/master/static/demo.jpg)
 
-## [Demo](https://walleeeee.github.io/daily-zhihu/)
+## [Demo](https://zhi3210happy.github.io/vuedaily/)
 
 建议在手机或F12手机模式下浏览
 
