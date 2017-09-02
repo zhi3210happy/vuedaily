@@ -1,125 +1,125 @@
 <template>
-<div id="app">
-	<header class="header">
-		<i v-if="!flag" class="iconfont icon-ic_menu" @click="toggle(true)"></i>
-		<i v-if="flag" class="iconfont icon-ic_back" @click="back()"></i>
-	</header>
-	<aside class="aside" :class="{open:open,docked:docked}" @click="toggle()">
-		<ul>
-			<li :class="{chose:num == 1}" @click="change(1)">
-				<span>首页</span>
-				<i class="iconfont" :class="{'iconcolor icon-ic_star_black':num == 1,'icon-ic_star':num != 1}" />
-			</li>
-			<li :class="{chose:num == index+2}" v-for="(x, index) in list" @click="change(index+2,x.id)">
-				<span>{{x.name}}</span>
-				<i class="iconfont " :class="{'iconcolor icon-ic_star_black':num == index+2,'icon-ic_star':num != index+2}" />
-			</li>
-			<li @click="jump()">
-				<span>项目地址</span>
-				<i class="iconfont icon-github" />
-			</li>
-		</ul>
-		<div class="cover" @touchmove="prevent"></div>
-	</aside>
-	<div v-if="circle" class="circle" @click="top()">
-		<i class="iconfont icon-ic_top"></i>
-	</div>
-	<transition :name="transitionName">
-		<keep-alive>
-			<router-view class="app-view" :class="{'app-view-hidden':docked}"></router-view>
-		</keep-alive>
-	</transition>
-</div>
+    <div id="app">
+        <header class="header">
+            <i v-if="!flag" class="iconfont icon-ic_menu" @click="toggle(true)"></i>
+            <i v-if="flag" class="iconfont icon-ic_back" @click="back()"></i>
+        </header>
+        <aside class="aside" :class="{open:open,docked:docked}" @click="toggle()">
+            <ul>
+                <li :class="{chose:num == 1}" @click="change(1)">
+                    <span>首页</span>
+                    <i class="iconfont" :class="{'iconcolor icon-ic_star_black':num == 1,'icon-ic_star':num != 1}" />
+                </li>
+                <li :class="{chose:num == index+2}" v-for="(x, index) in list" @click="change(index+2,x.id)" :key="index">
+                    <span>{{x.name}}</span>
+                    <i class="iconfont " :class="{'iconcolor icon-ic_star_black':num == index+2,'icon-ic_star':num != index+2}" />
+                </li>
+                <li @click="jump()">
+                    <span>项目地址</span>
+                    <i class="iconfont icon-github" />
+                </li>
+            </ul>
+            <div class="cover" @touchmove="prevent"></div>
+        </aside>
+        <div v-if="circle" class="circle" @click="top()">
+            <i class="iconfont icon-ic_top"></i>
+        </div>
+        <transition :name="transitionName">
+            <keep-alive>
+                <router-view class="app-view" :class="{'app-view-hidden':docked}"></router-view>
+            </keep-alive>
+        </transition>
+    </div>
 </template>
 
 <script>
 import {
-	mapState
+    mapState
 } from 'vuex'
 import api from './api/index'
 export default {
-	computed: {
-		...mapState({
-			circle: state => state.circleFlag,
-			num: state => state.num,
-			flag: state => state.drawer
-		})
-	},
-	mounted: function() {
-		let vue = this;
-		api.getTopics().then(function(data) {
-			vue.list = data.data.others;
-		});
-	},
-	data() {
-		return {
-			list: [],
-			open: false,
-			docked: false,
-			transitionName: 'slide-left'
-		}
-	},
-	watch: {
-		'$route' (to, from) {
-			this.transitionName = to.path != "/article" ? 'slide-right' : 'slide-left';
-		}
-	},
-	methods: {
-		back(n) {
-			if (n) {
-				this.$router.push({
-					path: 'home'
-				});
-			} else {
-				window.history.back()
-			}
-		},
-		toggle(flag) {
-			if (!this.open) {
-				this.docked = true;
-				this.open = true;
-			} else {
-				this.open = false;
-				let vue = this;
-				setTimeout(function() {
-					vue.docked = false;
-				}, 300);
-			}
-		},
-		change(n, id) {
-			let path = n == 1 ? 'home' : 'theme';
-			this.$router.push({
-				path: path,
-				query: {
-					id: id || ""
-				}
-			});
-			this.$store.commit('add', n);
-		},
-		prevent(event) {
-			event.preventDefault()
-			event.stopPropagation()
-		},
-		jump() {
-			window.open("https://github.com/walleeeee/daily-zhihu");
-		},
-		top() {
-			let vue = this;
-			let dom = document.querySelector('.app-view');
-			let height = dom.scrollTop;
-			let scrollTop = parseInt(height / 50);
-			let time = setInterval(function() {
-				height -= scrollTop;
-				if (height <= 0) {
-					dom.scrollTop = 0;
-					vue.$store.commit('toggle');
-					clearInterval(time);
-				} else {
-					dom.scrollTop = height;
-				}
-			}, 1);
-		}
-	}
+    computed: {
+        ...mapState({
+            circle: state => state.circleFlag,
+            num: state => state.num,
+            flag: state => state.drawer
+        })
+    },
+    mounted: function() {
+        let vue = this;
+        api.getTopics().then(function(data) {
+            vue.list = data.data.others;
+        });
+    },
+    data() {
+        return {
+            list: [],
+            open: false,
+            docked: false,
+            transitionName: 'slide-left'
+        }
+    },
+    watch: {
+        '$route'(to, from) {
+            this.transitionName = to.path != "/article" ? 'slide-right' : 'slide-left';
+        }
+    },
+    methods: {
+        back(n) {
+            if (n) {
+                this.$router.push({
+                    path: 'home'
+                });
+            } else {
+                window.history.back()
+            }
+        },
+        toggle(flag) {
+            if (!this.open) {
+                this.docked = true;
+                this.open = true;
+            } else {
+                this.open = false;
+                let vue = this;
+                setTimeout(function() {
+                    vue.docked = false;
+                }, 300);
+            }
+        },
+        change(n, id) {
+            let path = n == 1 ? 'home' : 'theme';
+            this.$router.push({
+                path: path,
+                query: {
+                    id: id || ""
+                }
+            });
+            this.$store.commit('add', n);
+        },
+        prevent(event) {
+            event.preventDefault()
+            event.stopPropagation()
+        },
+        jump() {
+            window.open("https://github.com/zhi3210happy/vuedaily");
+        },
+        top() {
+            let vue = this;
+            let dom = document.querySelector('.app-view');
+            let height = dom.scrollTop;
+            let scrollTop = parseInt(height / 50);
+            let time = setInterval(function() {
+                height -= scrollTop;
+                if (height <= 0) {
+                    dom.scrollTop = 0;
+                    vue.$store.commit('toggle');
+                    clearInterval(time);
+                } else {
+                    dom.scrollTop = height;
+                }
+            }, 1);
+        }
+    }
 }
 </script>
 
@@ -135,6 +135,7 @@ export default {
     opacity: 0.1;
     -webkit-transform: translate(-50vw, 0);
 }
+
 .app-view {
     z-index: 1;
     width: 100vw;
@@ -144,16 +145,18 @@ export default {
     transition: transform 0.3s ease;
     -webkit-overflow-scrolling: touch;
 }
+
 .app-view-hidden {
     overflow: hidden;
 }
+
 .header {
     width: 100%;
     height: 1.5rem;
     z-index: 9;
     padding-left: 5%;
     position: fixed;
-    background-image: linear-gradient(0deg, rgba(0,0,0,0.00) 0%, rgba(0,0,0,0.51) 95%);
+    background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.00) 0%, rgba(0, 0, 0, 0.51) 95%);
     .iconfont {
         color: #fff;
         font-size: 0.8rem;
@@ -161,6 +164,7 @@ export default {
         position: relative;
     }
 }
+
 .aside {
     z-index: 11;
     left: 0;
@@ -183,8 +187,8 @@ export default {
         height: 100%;
         padding: 1.3rem 0.5rem 0.5rem;
         overflow: auto;
-        background: rgba(91,116,146,0.75);
-        transform: translate(-100%,0);
+        background: rgba(91, 116, 146, 0.75);
+        transform: translate(-100%, 0);
         transition: transform 0.3s ease;
         -webkit-overflow-scrolling: touch;
         &::-webkit-scrollbar {
@@ -214,7 +218,7 @@ export default {
         height: 100%;
         opacity: 0;
         display: none;
-        background: rgba(172,185,201,0.40);
+        background: rgba(172, 185, 201, 0.40);
         transition: opacity 0.3s ease;
     }
     &.open {
@@ -231,14 +235,14 @@ export default {
             display: block;
         }
     }
-
 }
+
 .circle {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.80);
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.50);
+    background: rgba(255, 255, 255, 0.80);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.50);
     right: 5%;
     bottom: 5vw;
     position: fixed;
@@ -252,11 +256,12 @@ export default {
         position: absolute;
     }
 }
+
 @media screen and (min-width: 640px) {
     .app-view {
         width: 640px;
         left: 50%;
-        transform: translate(-50%,0);
+        transform: translate(-50%, 0);
     }
     .aside ul {
         width: 350px;

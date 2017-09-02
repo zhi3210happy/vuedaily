@@ -39,8 +39,7 @@ new Vue({
     el: '#app',
     router,
     store,
-    template: '<App/>',
-    ...App
+    render: h => h(App)
 })
 let indexScrollTop = 0;
 let dom = document.querySelector('.app-view');
